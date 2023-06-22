@@ -15,7 +15,6 @@ type OBSRemoteControlProps = {
 	password: string;
 	sceneDefault?: string;
 	sceneQueue?: string;
-	sceneStream?: string;
 	mediaSourceDefaultVideo?: string;
 	mediaSourceQueueVideo1?: string;
 	mediaSourceQueueVideo2?: string;
@@ -29,41 +28,24 @@ export default class OBSRemoteControl {
 	private defaultSceneItemTransform: Record<string, unknown>;
 	private sceneDefault: string;
 	private sceneQueue: string;
-	private sceneStream: string;
 	private mediaSourceDefaultVideo: string;
-	private mediaSourceQueueVideo1: string;
-	private mediaSourceQueueVideo2: string;
 	private state: State;
-
-	private defaultVideo = {};
 
 	constructor({
 		host = "ws:localhost:4455",
 		password = "",
 		sceneDefault = "default",
 		sceneQueue = "queue",
-		sceneStream = "stream",
 		mediaSourceDefaultVideo = "defaultVideo",
-		mediaSourceQueueVideo1 = "queueVideo1",
-		mediaSourceQueueVideo2 = "queueVideo2",
 	}: OBSRemoteControlProps) {
 		this.obs = new OBSWebSocket();
 		this.host = host;
 		this.password = password;
 		this.sceneDefault = sceneDefault;
 		this.sceneQueue = sceneQueue;
-		this.sceneStream = sceneStream;
 		this.mediaSourceDefaultVideo = mediaSourceDefaultVideo;
-		this.mediaSourceQueueVideo1 = mediaSourceQueueVideo1;
-		this.mediaSourceQueueVideo2 = mediaSourceQueueVideo2;
 		this.videoQueue = new VideoQueue();
 		this.state = "default";
-
-		// Hack to get "on" working
-		(this.obs as unknown as EventEmitter).on(
-			"MediaInputPlaybackStarted",
-			this.onMediaStarted.bind(this)
-		);
 
 		// Hack to get "on" working
 		(this.obs as unknown as EventEmitter).on(
@@ -77,9 +59,6 @@ export default class OBSRemoteControl {
 			.connect(this.host, this.password)
 			.then(async () => {
 				console.log("Successfully connected to OBS.");
-
-				//
-				// this.playNext();
 
 				this.setup();
 			})
@@ -170,11 +149,6 @@ export default class OBSRemoteControl {
 		});
 	}
 
-	async onMediaStarted(data): Promise<void> {
-		//
-		// console.log("started", data);
-	}
-
 	async onMediaEnded(data: { inputName: string }): Promise<void> {
 		const { inputName } = data;
 
@@ -213,7 +187,6 @@ export default class OBSRemoteControl {
 		if (nextVideo !== null) {
 			console.log("playNext", nextVideo?.videoPath);
 
-			// We have a video in the queue, switch to the 'failfast_queue' scene and set the media source to the next video
 			await this.obs
 				.callBatch([
 					{
