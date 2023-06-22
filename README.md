@@ -6,11 +6,10 @@
 
 - [Prerequisites](#prerequisites)
 - [Getting started](#getting-started)
+  * [OBS setup](#obs-setup)
 - [Concept](#concept)
 - [Under the hood](#under-the-hood)
-  * [Remote control OBS](#remote-control-obs)
-    + [Base setup](#base-setup)
-  * [How it works](#how-it-works)
+  * [OBS: How it works](#obs-how-it-works)
 
 <!-- tocstop -->
 
@@ -19,11 +18,73 @@
 Before running the application, make sure you have the following prerequisites installed:
 
 - [Node.js](https://nodejs.org) (version 18.16 or higher) (run `nvm use` if you use [NVM](https://github.com/nvm-sh/nvm) or similar tools)
-- [Twitch](https://www.twitch.tv) account with [stream key](https://help.twitch.tv/s/article/twitch-stream-key-faq?language=en_US) for streaming & a [registered app](https://dev.twitch.tv/console) (client-id & client-secrect) to read messages from the chat
+- [Twitch](https://www.twitch.tv) account with [stream key](https://help.twitch.tv/s/article/twitch-stream-key-faq?language=en_US) for streaming
+- [OBS](https://obsproject.com/) > 28.0.0 because it includes the obs-websocket plugin
 
 ## Getting started
 
-TODO: Clone and install and create the env and everything else
+1. Clone the repo to your computer:
+
+```
+git clone https://github.com/failfa-st/strai.git
+```
+
+2. Go into the **strai** folder
+
+```
+cd strai
+```
+
+3. Install dependencies
+
+```
+npm i
+```
+
+4. Create the .env based on .env.example
+
+```
+cp .env.example .env
+```
+
+5. Fill out the .env
+
+```
+# You get this password in the next step "OBS Setup"
+OBS_PASSWORD=
+
+# The full path to the video that gets looped as a default when nothing is visible
+OBS_DEFAULT_VIDEO=
+```
+
+### OBS setup
+
+You need to create the following base setup:
+
+* A **scene** named `default` with an **Sources > Media Source** named `defaultVideo` with the following configuration
+  * Local file: true
+  * Loop: true
+  * Restart playback when source becomes available: true
+  * Use hardware decoding when available: true
+  * Show nothing when playback ends: false
+  * Close file when inactive: false
+  * Leave all other settings on their defaults
+* A **scene** named `queue` with 
+* A **scene** named `stream` with
+  * **Sources > Group** named `setup`
+  * **Sources > Scene** and select `default` and put it into the group `setup`
+  * **Sources > Scene** and select `queue` and put it into the group `setup`
+  * Make sure that the scenes inside the group are in this order:
+    * `queue`
+    * `default`
+
+
+Then you can also configure the Websocket-Server:
+
+* **Tools > WebSocket Server Settings**
+  * Set the server port to 4455, as this is the default here
+  * Enable Authentication: true
+  * Click on the "Show Connect Info" to get the **Server Password**
 
 ## Concept
 
@@ -49,30 +110,7 @@ This diagram describes the following steps:
 
 ## Under the hood
 
-### Remote control OBS
-
-#### Base setup
-
-You need to create the following base setup:
-
-* A **scene** named `default` with an **Sources > Media Source** named `defaultVideo` with the following configuration
-  * Local file: true
-  * Loop: true
-  * Restart playback when source becomes available: true
-  * Use hardware decoding when available: true
-  * Show nothing when playback ends: false
-  * Close file when inactive: false
-  * Leave all other settings on their defaults
-* A **scene** named `queue` with 
-* A **scene** named `stream` with
-  * **Sources > Group** named `setup`
-  * **Sources > Scene** and select `default` and put it into the group `setup`
-  * **Sources > Scene** and select `queue` and put it into the group `setup`
-  * Make sure that the scenes inside the group are in this order:
-    * `queue`
-    * `default`
-
-### How it works
+### OBS: How it works
 
 * Enable the `defaultVideo`
   * This makes sure that we have a loop constantly running when nothing is happening
