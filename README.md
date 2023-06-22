@@ -51,7 +51,7 @@ cp .env.example .env
 
 ```
 # You get this password in the next step "OBS Setup"
-OBS_PASSWORD=
+OBS_WEBSOCKET_SERVER_PASSWORD=
 
 # The full path to the video that gets looped as a default when nothing is visible
 OBS_DEFAULT_VIDEO=

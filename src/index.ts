@@ -5,7 +5,7 @@ import OBSRemoteControl from "./components/OBSRemoteControl.js";
 config();
 
 const obsRemoteControl = new OBSRemoteControl({
-	password: process.env.OBS_PASSWORD,
+	password: process.env.OBS_WEBSOCKET_SERVER_PASSWORD,
 	defaultVideoPath: process.env.OBS_DEFAULT_VIDEO,
 });
 
