@@ -13,7 +13,6 @@ type State = "default" | "queue";
 type OBSRemoteControlProps = {
 	host?: string;
 	password: string;
-	defaultVideoPath: string;
 	sceneDefault?: string;
 	sceneQueue?: string;
 	sceneStream?: string;
@@ -27,7 +26,6 @@ export default class OBSRemoteControl {
 	private host: string;
 	private password: string;
 	private videoQueue: VideoQueue;
-	private defaultVideoPath: string;
 	private defaultSceneItemTransform: Record<string, unknown>;
 	private sceneDefault: string;
 	private sceneQueue: string;
@@ -42,7 +40,6 @@ export default class OBSRemoteControl {
 	constructor({
 		host = "ws:localhost:4455",
 		password = "",
-		defaultVideoPath = "",
 		sceneDefault = "default",
 		sceneQueue = "queue",
 		sceneStream = "stream",
@@ -53,7 +50,6 @@ export default class OBSRemoteControl {
 		this.obs = new OBSWebSocket();
 		this.host = host;
 		this.password = password;
-		this.defaultVideoPath = defaultVideoPath;
 		this.sceneDefault = sceneDefault;
 		this.sceneQueue = sceneQueue;
 		this.sceneStream = sceneStream;

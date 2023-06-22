@@ -6,7 +6,6 @@ config();
 
 const obsRemoteControl = new OBSRemoteControl({
 	password: process.env.OBS_WEBSOCKET_SERVER_PASSWORD,
-	defaultVideoPath: process.env.OBS_DEFAULT_VIDEO,
 });
 
 await obsRemoteControl.connect();
